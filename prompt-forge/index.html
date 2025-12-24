@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Forge | High-Precision Prompt Engineering</title>
+    <meta name="description" content="Design, refine & deploy prompt systems with engineered precision.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            /* Palette */
+            --bg-base: #06080c;
+            --bg-surface: #0b0f16;
+            --gold-primary: #d4af37;
+            --gold-accent: #f2d06b;
+            --neon-green: #b6ff4a;
+            --text-main: #e9eef7;
+            --text-muted: rgba(233, 238, 247, 0.65);
+            
+            /* Typography */
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            
+            /* Spacing */
+            --spacing-container: 1200px;
+            --header-height: 80px;
+        }
+
+        /* Reset & Base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Layering */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 10;
+            pointer-events: none;
+            /* Fade out at bottom */
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at 50% -20%, #1a1f2e 0%, var(--bg-base) 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 30;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        h1 {
+            font-size: 36px;
+        }
+        
+        @media (min-width: 768px) {
+            h1 { font-size: 56px; }
+        }
+
+        h2 {
+            font-size: 26px;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            h2 { font-size: 34px; }
+        }
+
+        .font-mono {
+            font-family: var(--font-mono);
+        }
+
+        .text-gold { color: var(--gold-primary); }
+        .text-green { color: var(--neon-green); }
+        .text-muted { color: var(--text-muted); }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            background: rgba(6, 8, 12, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            z-index: 50;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+                gap: 2rem;
+            }
+        }
+
+        .nav-link {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--gold-primary);
+        }
+
+        /* Container */
+        .container {
+            max-width: var(--spacing-container);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Hero Section */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: var(--header-height);
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 680px;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .badges {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--gold-primary);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .subline {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            margin: 1.5rem 0 2.5rem 0;
+            max-width: 500px;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: 2px;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 15px rgba(182, 255, 74, 0.2);
+            border-color: var(--neon-green);
+            color: var(--text-main);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(233, 238, 247, 0.2);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold-primary);
+            color: var(--gold-primary);
+        }
+
+        /* Sections General */
+        section {
+            padding: 6rem 0;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Feature Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            background: rgba(11, 15, 22, 0.6);
+            border: 1px solid rgba(233, 238, 247, 0.1);
+            padding: 2rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 2px; height: 100%;
+            background: var(--gold-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(182, 255, 74, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1.5rem;
+            color: var(--gold-primary);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .chip {
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            background: rgba(255,255,255,0.05);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        /* Builder Section */
+        #builder {
+            background: linear-gradient(to bottom, var(--bg-surface), var(--bg-base));
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .forge-console {
+            background: #080a0f;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 6px;
+            padding: 2rem;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .forge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 1rem;
+        }
+
+        .forge-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .forge-select {
+            background: transparent;
+            color: var(--gold-primary);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 0.5rem 1rem;
+            font-family: var(--font-mono);
+            cursor: pointer;
+            border-radius: 2px;
+        }
+        
+        .forge-select:focus {
+            outline: none;
+            border-color: var(--neon-green);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            padding: 1rem;
+            min-height: 150px;
+            resize: vertical;
+            border-radius: 2px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+        }
+
+        .output-area {
+            background: #040507;
+            border: 1px dashed rgba(255,255,255,0.1);
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--neon-green);
+            white-space: pre-wrap;
+            min-height: 100px;
+            margin-top: 1.5rem;
+            position: relative;
+            display: none;
+        }
+
+        .output-area.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .btn-copy {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text-muted);
+            padding: 0.2rem 0.5rem;
+            cursor: pointer;
+        }
+        
+        .btn-copy:hover {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+
+    <!-- Layer 0: Gradient Background -->
+    <div class="bg-gradient"></div>
+
+    <!-- Layer 1: 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Layer 3: Content -->
+    <div class="content-layer">
+        
+        <!-- Navigation -->
+        <nav>
+            <a href="#" class="nav-logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" style="color: var(--gold-primary)">
+                    <rect x="2" y="2" width="20" height="20"></rect>
+                    <rect x="7" y="7" width="10" height="10"></rect>
+                </svg>
+                Prompt Forge
+            </a>
+            <div class="nav-links">
+                <a href="#about" class="nav-link">Mission</a>
+                <a href="#features" class="nav-link">Capabilities</a>
+                <a href="#builder" class="nav-link" style="color: var(--gold-primary)">Forge</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="badges">
+                        <span class="badge">v2.4 Stable</span>
+                        <span class="badge">Gold Standard</span>
+                        <span class="badge">Tool-Ready</span>
+                    </div>
+                    <h1>Design. Refine.<br><span class="text-gold">Deploy.</span></h1>
+                    <p class="subline">
+                        A high-end engineering environment for prompt systems. Structure your LLM interactions with mathematical precision and foundry-grade reliability.
+                    </p>
+                    <div class="btn-group">
+                        <a href="#builder" class="btn btn-primary">Open Builder</a>
+                        <a href="#features" class="btn btn-secondary">System Specs</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Value / About Section -->
+        <section id="about">
+            <div class="container">
+                <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                    <h2 class="font-mono text-gold">// THE FORGE PHILOSOPHY</h2>
+                    <p style="font-size: 1.25rem; color: var(--text-main);">
+                        Prompt engineering is not art—it is architecture. 
+                        We provide the structural frameworks and testing environments required to build robust cognitive systems. 
+                        <span class="text-muted">Eliminate hallucinations through rigorous constraint definition and syntax optimization.</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section id="features">
+            <div class="container">
+                <h2 style="margin-bottom: 3rem;">Technical Specifications</h2>
+                <div class="grid">
+                    <!-- Card 1 -->
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <h3>Multi-Layer Context</h3>
+                        <p>Define role, task, and constraints in isolated semantic layers to prevent instruction bleeding.</p>
+                        <span class="chip">Isolation: High</span> <span class="chip">RFC-792</span>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                        </div>
+                        <h3>Strict Guardrails</h3>
+                        <p>Inject deterministic stop sequences and negative constraints to ensure compliance.</p>
+                        <span class="chip">Security</span> <span class="chip">Compliance</span>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                <polyline points="2 17 12 22 22 17"></polyline>
+                                <polyline points="2 12 12 17 22 12"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Chain-of-Thought</h3>
+                        <p>Automated reasoning step injection for complex logic tasks and mathematical derivations.</p>
+                        <span class="chip">CoT</span> <span class="chip">Reasoning</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Builder Section -->
+        <section id="builder">
+            <div class="container">
+                <div class="forge-console">
+                    <div class="forge-header">
+                        <span class="font-mono text-gold" style="font-size: 0.9rem;">> CONSOLE_ACTIVE</span>
+                        <div class="forge-controls">
+                            <select id="mode-select" class="forge-select" aria-label="Select prompt mode">
+                                <option value="spec">Mode: Specification (Std)</option>
+                                <option value="lite">Mode: Lite (Min)</option>
+                                <option value="strict">Mode: Strict (Sec)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="prompt-input" class="input-label">RAW_INTENT_INPUT:</label>
+                        <textarea id="prompt-input" placeholder="Enter your core task, objective, or query here..."></textarea>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button id="forge-btn" class="btn btn-primary" style="width: 100%;">
+                            <span style="margin-right: 8px;">⚡</span> FORGE PROMPT
+                        </button>
+                    </div>
+
+                    <div id="output-panel" class="output-area" aria-live="polite">
+                        <button class="btn-copy" id="copy-btn">COPY</button>
+                        <div id="output-content"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer id="contact">
+            <div class="container">
+                <div class="footer-links">
+                    <a href="#" class="nav-link">Documentation</a>
+                    <a href="#" class="nav-link">API Reference</a>
+                    <a href="#" class="nav-link">Status</a>
+                    <a href="#" class="nav-link">Legal</a>
+                </div>
+                <div class="copyright">
+                    &copy; 2024 MACHINE TOOL INDUSTRIES. ALL RIGHTS RESERVED.<br>
+                    <span class="text-muted" style="font-size: 0.7rem;">PROMPT FORGE™ IS A TRADEMARK OF MTI.</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- 1. Three.js Scene Setup (The Tesseract) ---
+        const init3D = () => {
+            const container = document.getElementById('canvas-container');
+            if (!container) return;
+
+            // Scene & Camera
+            const scene = new THREE.Scene();
+            // Subtle fog for depth
+            scene.fog = new THREE.FogExp2(0x06080c, 0.02);
+
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.z = 4.5;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            // Limit pixel ratio for performance
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // Geometry Construction (Tesseract Wireframe)
+            // Vertices for a standard cube centered at origin [-1, 1]
+            // We create 8 vertices for Inner Cube and 8 for Outer Cube
+            
+            // Helper to get cube points
+            const getCubePoints = (scale) => {
+                const s = scale;
+                return [
+                    new THREE.Vector3(-s, -s, -s), new THREE.Vector3(s, -s, -s),
+                    new THREE.Vector3(s, s, -s), new THREE.Vector3(-s, s, -s),
+                    new THREE.Vector3(-s, -s, s), new THREE.Vector3(s, -s, s),
+                    new THREE.Vector3(s, s, s), new THREE.Vector3(-s, s, s)
+                ];
+            };
+
+            const innerScale = 0.55;
+            const outerScale = 1.0;
+            const innerPoints = getCubePoints(innerScale);
+            const outerPoints = getCubePoints(outerScale);
+
+            // Build Lines
+            const points = [];
+
+            // Helper to add line between two indices of a point array
+            const addCubeEdges = (pArray) => {
+                // Bottom face
+                points.push(pArray[0], pArray[1]); points.push(pArray[1], pArray[2]);
+                points.push(pArray[2], pArray[3]); points.push(pArray[3], pArray[0]);
+                // Top face
+                points.push(pArray[4], pArray[5]); points.push(pArray[5], pArray[6]);
+                points.push(pArray[6], pArray[7]); points.push(pArray[7], pArray[4]);
+                // Vertical pillars
+                points.push(pArray[0], pArray[4]); points.push(pArray[1], pArray[5]);
+                points.push(pArray[2], pArray[6]); points.push(pArray[3], pArray[7]);
+            };
+
+            // Add Inner and Outer edges
+            addCubeEdges(innerPoints);
+            addCubeEdges(outerPoints);
+
+            // Add Connectors (Inner vertex i to Outer vertex i)
+            for(let i=0; i<8; i++) {
+                points.push(innerPoints[i], outerPoints[i]);
+            }
+
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+            // Materials
+            // 1. Crisp Line
+            const material = new THREE.LineBasicMaterial({ 
+                color: 0xd4af37, // Gold
+                transparent: true,
+                opacity: 0.6
+            });
+
+            // 2. Glow Line (Thicker/Fainter - mimicked by drawing duplicate slightly offset or just same geo with diff blending)
+            // WebGL Line width is restricted in most browsers to 1px. 
+            // We simulate glow primarily via opacity pulsing in the loop, but let's keep a second mesh for "bloom" feel if needed.
+            // For simple efficient wireframe glow, strictly manipulating opacity is better.
+            
+            const wireframe = new THREE.LineSegments(geometry, material);
+            scene.add(wireframe);
+
+            // Create a "ghost" wireframe slightly scaled for bloom effect
+            const glowMaterial = new THREE.LineBasicMaterial({
+                color: 0xb6ff4a, // Greenish for the pulse
+                transparent: true,
+                opacity: 0.1,
+                blending: THREE.AdditiveBlending
+            });
+            const glowWireframe = new THREE.LineSegments(geometry, glowMaterial);
+            glowWireframe.scale.set(1.02, 1.02, 1.02);
+            scene.add(glowWireframe);
+
+
+            // --- Animation Loop ---
+            let mouseX = 0;
+            let mouseY = 0;
+
+            const animate = () => {
+                if (document.hidden) return; // Pause if tab inactive
+
+                requestAnimationFrame(animate);
+
+                const t = performance.now() * 0.001;
+
+                // Rotation
+                const rotSpeed = 0.12;
+                wireframe.rotation.x = t * rotSpeed * 0.5;
+                wireframe.rotation.y = t * rotSpeed;
+                glowWireframe.rotation.x = t * rotSpeed * 0.5;
+                glowWireframe.rotation.y = t * rotSpeed;
+
+                // Pulsing Logic (Appendix 3)
+                // Sine wave between 0 and 1
+                const pulse = 0.35 + 0.65 * Math.sin(t * 1.8) * 0.5 + 0.5;
+                
+                // Opacity Pulse
+                material.opacity = 0.3 + 0.5 * pulse; 
+                glowMaterial.opacity = 0.05 + 0.15 * pulse;
+
+                // Subtle color shift logic
+                // Lerp between Gold (0xd4af37) and Green (0xb6ff4a) based on pulse
+                const c1 = new THREE.Color(0xd4af37);
+                const c2 = new THREE.Color(0xb6ff4a);
+                const mixedColor = c1.lerp(c2, pulse * 0.4); // bias towards gold
+                material.color = mixedColor;
+
+                // Mouse Parallax (Appendix 4)
+                // Smooth lerp
+                const targetX = (mouseX * 0.3);
+                const targetY = (mouseY * 0.3);
+                
+                camera.position.x += (targetX - camera.position.x) * 0.05;
+                camera.position.y += (-targetY - camera.position.y) * 0.05;
+                camera.lookAt(0, 0, 0);
+                
+                renderer.render(scene, camera);
+            };
+
+            // Events
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                // Normalize mouse -1 to 1
+                mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+                mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+            });
+
+            // Handle Reduced Motion
+            const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (!mediaQuery.matches) {
+                animate();
+            } else {
+                // Render once static
+                renderer.render(scene, camera);
+            }
+        };
+
+        // --- 2. UI Logic (Scroll Reveal) ---
+        const initUI = () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+        };
+
+        // --- 3. Prompt Builder Logic (Appendix 5) ---
+        const forgePrompt = (inputText, mode) => {
+            const cleanInput = inputText.trim() || "[NO INPUT DETECTED]";
+            const timestamp = new Date().toISOString();
+
+            if (mode === 'lite') {
+                return `### SYSTEM: MINIMAL\n### TASK: ${cleanInput}\n### FORMAT: Concise, Plain Text.`;
+            }
+
+            if (mode === 'strict') {
+                return `<!-- SYSTEM: SECURE_ENCLAVE_v1 -->
+<meta>
+  <timestamp>${timestamp}</timestamp>
+  <security_level>HIGH</security_level>
+</meta>
+
+<instruction_set>
+  <role>You are a precise analytical engine. Do not deviate from facts.</role>
+  <constraints>
+    - No hallucination permitted.
+    - If answer is unknown, state "UNKNOWN".
+    - Do not offer conversational filler.
+  </constraints>
+  <task>
+    ${cleanInput}
+  </task>
+</instruction_set>
+
+<output_format>JSON</output_format>`;
+            }
+
+            // Default: Spec
+            return `### SYSTEM CONTEXT
+You are Prompt Forge Unit 7, an expert system designed for high-precision outputs.
+Adhere to the following architectural guidelines:
+1. Break down the user request into logical components.
+2. Apply chain-of-thought reasoning before generating the final answer.
+3. Maintain a professional, technical tone.
+
+### USER INPUT
+"${cleanInput}"
+
+### RESPONSE PROTOCOL
+- Step 1: Analyze Intent
+- Step 2: Formulate Solution
+- Step 3: Verify Constraints
+
+### OUTPUT
+[Awaiting Generation...]`;
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            init3D();
+            initUI();
+
+            // Builder Interaction
+            const btnForge = document.getElementById('forge-btn');
+            const input = document.getElementById('prompt-input');
+            const outputPanel = document.getElementById('output-panel');
+            const outputContent = document.getElementById('output-content');
+            const modeSelect = document.getElementById('mode-select');
+            const copyBtn = document.getElementById('copy-btn');
+
+            btnForge.addEventListener('click', () => {
+                const text = input.value;
+                const mode = modeSelect.value;
+                
+                // Simulate processing delay for "Forge" feel
+                btnForge.innerHTML = 'FORGING...';
+                
+                setTimeout(() => {
+                    const result = forgePrompt(text, mode);
+                    outputContent.innerText = result;
+                    outputPanel.classList.add('active');
+                    btnForge.innerHTML = '<span style="margin-right: 8px;">⚡</span> FORGE PROMPT';
+                }, 400);
+            });
+
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(outputContent.innerText).then(() => {
+                    const original = copyBtn.innerText;
+                    copyBtn.innerText = "COPIED";
+                    setTimeout(() => copyBtn.innerText = original, 2000);
+                });
+            });
+        });
+
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
