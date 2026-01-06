@@ -23,7 +23,19 @@ The project uses Vite and is configured to publish static assets to `dist/` with
 3. Keep `public/CNAME` in the repository so GitHub Pages serves the site at **prompt.machinetool.site**.
 4. `public/ads.txt` is included for AdSense and will be copied to the root of the published site.
 
+## GitHub Actions Deployment
+
+- `.github/workflows/deploy.yml` builds the site with Node.js 22 on every push to `main` or `work` and publishes the generated `dist/` folder to GitHub Pages.
+- The workflow caches npm dependencies via `actions/setup-node` and uploads the static assets with `actions/upload-pages-artifact` before invoking `actions/deploy-pages`.
+- The working directory for all build steps is `prompt-forge/`, so repository assets such as `public/CNAME` are preserved in the final artifact.
+
 ## Google AdSense Placement
 
 - The global AdSense loader and account meta tag are injected in the `<head>` of `index.html`.
 - `public/ads.txt` contains the required seller record: `google.com, pub-1712273263687132, DIRECT, f08c47fec0942fa0`.
+
+## Bekannte Platzhalter
+
+- `index.tsx` ist derzeit leer und als zukünftiger Einstiegspunkt vorgesehen, falls das Inline-JavaScript von `index.html` in ein Modul ausgelagert werden soll.
+- `public/index.css` enthält noch keinen Stilcode und kann genutzt werden, falls zusätzliche globale Styles für GitHub Pages benötigt werden.
+- Für Google AdSense ist noch kein konkreter Anzeigen-Slot (`<ins class="adsbygoogle" ...>`) eingebunden, da keine Slot-ID vorliegt; sobald eine Einheit konfiguriert ist, kann der Slot im Seiteninhalt ergänzt werden.
