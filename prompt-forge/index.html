@@ -473,6 +473,61 @@
             margin-bottom: 2rem;
         }
 
+        /* Legal */
+        #legal {
+            background: rgba(6, 8, 12, 0.6);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .legal-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 992px) {
+            .legal-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .legal-card {
+            background: rgba(11, 15, 22, 0.75);
+            border: 1px solid rgba(233, 238, 247, 0.08);
+            padding: 2rem;
+            border-radius: 6px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        .legal-card h3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .legal-card p {
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .legal-list {
+            list-style: none;
+            margin: 0 0 1rem 0;
+            padding: 0;
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .legal-list li {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 0.65rem 0.75rem;
+            border-radius: 4px;
+        }
+
+        .legal-list strong {
+            color: var(--text-main);
+        }
+
         .copyright {
             color: var(--text-muted);
             font-size: 0.85rem;
@@ -520,6 +575,7 @@
                 <a href="#about" class="nav-link">Mission</a>
                 <a href="#features" class="nav-link">Capabilities</a>
                 <a href="#builder" class="nav-link" style="color: var(--gold-primary)">Forge</a>
+                <a href="#legal" class="nav-link">Legal</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
         </nav>
@@ -639,14 +695,45 @@
             </div>
         </section>
 
+        <!-- Legal Section -->
+        <section id="legal">
+            <div class="container">
+                <div class="legal-grid">
+                    <div id="impressum" class="legal-card">
+                        <h2 class="font-mono text-gold">// Impressum</h2>
+                        <p>Verantwortlich für den Inhalt dieser Website:</p>
+                        <ul class="legal-list">
+                            <li><strong>Name:</strong> B. Poersch</li>
+                            <li><strong>Adresse:</strong> Grazer Damm 207, 12157 Berlin, Deutschland</li>
+                            <li><strong>USt-ID:</strong> DE307270013</li>
+                            <li><strong>E-Mail:</strong> <a href="mailto:info@machinemind.me">info@machinemind.me</a></li>
+                        </ul>
+                        <p class="text-muted">Kontaktanfragen bitte bevorzugt per E-Mail. Verantwortlich i.S.d. § 18 Abs. 2 MStV: B. Poersch.</p>
+                    </div>
+
+                    <div id="datenschutz" class="legal-card">
+                        <h2 class="font-mono text-gold">// Datenschutzerklärung</h2>
+                        <p>Wir verarbeiten nur die Daten, die für den Betrieb dieser statischen Seite notwendig sind.</p>
+                        <ul class="legal-list">
+                            <li><strong>Server-Logs:</strong> IP-Adresse (anonymisiert), Zeitstempel und User-Agent werden zur Sicherstellung des Seitenbetriebs und zur Fehleranalyse protokolliert und automatisch gelöscht, sobald sie nicht mehr benötigt werden.</li>
+                            <li><strong>Prompt-Eingaben:</strong> Inhalte, die im „Forge“-Eingabefeld eingegeben werden, bleiben im Browser und werden nicht an einen Server gesendet.</li>
+                            <li><strong>Werbung/Google AdSense:</strong> Der eingebundene AdSense-Code kann Cookies oder ähnliche Technologien nutzen, um Anzeigen auszuliefern oder zu personalisieren. Sie können personalisierte Werbung über Ihre Google-Kontoeinstellungen oder die Cookie-Einstellungen Ihres Browsers deaktivieren.</li>
+                            <li><strong>Kontakt:</strong> Für Auskunft, Berichtigung oder Löschung Ihrer personenbezogenen Daten wenden Sie sich an <a href="mailto:info@machinemind.me">info@machinemind.me</a>.</li>
+                        </ul>
+                        <p class="text-muted">Weitere Informationen zum Umgang mit personenbezogenen Daten bei Google finden Sie in den <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy &amp; Terms</a> von Google.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Footer -->
         <footer id="contact">
             <div class="container">
                 <div class="footer-links">
-                    <a href="#" class="nav-link">Documentation</a>
-                    <a href="#" class="nav-link">API Reference</a>
-                    <a href="#" class="nav-link">Status</a>
-                    <a href="#" class="nav-link">Legal</a>
+                    <a href="#impressum" class="nav-link">Impressum</a>
+                    <a href="#datenschutz" class="nav-link">Datenschutz</a>
+                    <a href="mailto:info@machinemind.me" class="nav-link">Kontakt</a>
+                    <a href="#builder" class="nav-link">Builder</a>
                 </div>
                 <div class="copyright">
                     &copy; 2024 MACHINE TOOL INDUSTRIES. ALL RIGHTS RESERVED.<br>
