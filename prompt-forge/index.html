@@ -423,6 +423,102 @@
             border-color: var(--gold-primary);
         }
 
+        .mode-info {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .mode-info {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        .mode-card {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            border-radius: 4px;
+            padding: 1rem;
+        }
+
+        .mode-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .mode-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .slider-panel {
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            border-radius: 4px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .slider-note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .slider-row {
+            display: grid;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .slider-value {
+            color: var(--gold-primary);
+        }
+
+        .forge-slider {
+            width: 100%;
+            appearance: none;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        .forge-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--gold-primary);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            cursor: pointer;
+        }
+
+        .forge-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--gold-primary);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            cursor: pointer;
+            border: none;
+        }
+
         .output-area {
             background: #040507;
             border: 1px dashed rgba(255,255,255,0.1);
@@ -675,6 +771,63 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="mode-info" aria-label="Prompt mode descriptions">
+                        <div class="mode-card">
+                            <h4>Specification (Std)</h4>
+                            <p>Full structure with analysis cues, output protocol, and design constraints for comprehensive responses.</p>
+                        </div>
+                        <div class="mode-card">
+                            <h4>Lite (Min)</h4>
+                            <p>Minimal framing with a compact task definition for fast, lightweight answers.</p>
+                        </div>
+                        <div class="mode-card">
+                            <h4>Strict (Sec)</h4>
+                            <p>Security-first template with deterministic guardrails, explicit constraints, and JSON output.</p>
+                        </div>
+                    </div>
+
+                    <div class="slider-panel" aria-label="Prompt intensity controls">
+                        <div class="slider-panel-header">
+                            <span class="font-mono text-gold" style="font-size: 0.8rem;">> PROMPT_INTENSITY_CONTROLS</span>
+                            <span class="slider-note">Can only be adjusted before prompt is generated.</span>
+                        </div>
+                        <div class="slider-row">
+                            <div class="slider-label">
+                                <span>Temperature (0.1-1.0)</span>
+                                <span id="temperature-value" class="slider-value">0.7</span>
+                            </div>
+                            <input id="temperature-slider" class="forge-slider" type="range" min="0.1" max="1.0" step="0.1" value="0.7">
+                        </div>
+                        <div class="slider-row">
+                            <div class="slider-label">
+                                <span>UI particle effects</span>
+                                <span id="particles-value" class="slider-value">60</span>
+                            </div>
+                            <input id="particles-slider" class="forge-slider" type="range" min="0" max="100" step="1" value="60">
+                        </div>
+                        <div class="slider-row">
+                            <div class="slider-label">
+                                <span>Mouse cursor effect</span>
+                                <span id="cursor-value" class="slider-value">50</span>
+                            </div>
+                            <input id="cursor-slider" class="forge-slider" type="range" min="0" max="100" step="1" value="50">
+                        </div>
+                        <div class="slider-row">
+                            <div class="slider-label">
+                                <span>Colorfulness</span>
+                                <span id="colour-value" class="slider-value">70</span>
+                            </div>
+                            <input id="colour-slider" class="forge-slider" type="range" min="0" max="100" step="1" value="70">
+                        </div>
+                        <div class="slider-row" style="margin-bottom: 0;">
+                            <div class="slider-label">
+                                <span>Details</span>
+                                <span id="details-value" class="slider-value">65</span>
+                            </div>
+                            <input id="details-slider" class="forge-slider" type="range" min="0" max="100" step="1" value="65">
+                        </div>
+                    </div>
                     
                     <div class="input-group">
                         <label for="prompt-input" class="input-label">RAW_INTENT_INPUT:</label>
@@ -923,12 +1076,13 @@
         };
 
         // --- 3. Prompt Builder Logic (Appendix 5) ---
-        const forgePrompt = (inputText, mode) => {
+        const forgePrompt = (inputText, mode, tuning) => {
             const cleanInput = inputText.trim() || "[NO INPUT DETECTED]";
             const timestamp = new Date().toISOString();
+            const tuningBlock = `Temperature: ${tuning.temperature}\nUI particle effects: ${tuning.particles}\nMouse cursor effect: ${tuning.cursor}\nColourfulness: ${tuning.colour}\nDetails: ${tuning.details}`;
 
             if (mode === 'lite') {
-                return `### SYSTEM: MINIMAL\n### TASK: ${cleanInput}\n### FORMAT: Concise, Plain Text.`;
+                return `### SYSTEM: MINIMAL\n### TASK: ${cleanInput}\n### TUNING (PRE-GENERATION)\n${tuningBlock}\n### FORMAT: Concise, Plain Text.`;
             }
 
             if (mode === 'strict') {
@@ -936,6 +1090,13 @@
 <meta>
   <timestamp>${timestamp}</timestamp>
   <security_level>HIGH</security_level>
+  <tuning_pre_generation>
+    <temperature>${tuning.temperature}</temperature>
+    <ui_particle_effects>${tuning.particles}</ui_particle_effects>
+    <mouse_cursor_effect>${tuning.cursor}</mouse_cursor_effect>
+    <colourfulness>${tuning.colour}</colourfulness>
+    <details>${tuning.details}</details>
+  </tuning_pre_generation>
 </meta>
 
 <instruction_set>
@@ -961,6 +1122,9 @@ Adhere to the following architectural guidelines:
 2. Apply chain-of-thought reasoning before generating the final answer.
 3. Maintain a professional, technical tone.
 
+### PROMPT TUNING (PRE-GENERATION ONLY)
+${tuningBlock}
+
 ### USER INPUT
 "${cleanInput}"
 
@@ -984,16 +1148,43 @@ Adhere to the following architectural guidelines:
             const outputContent = document.getElementById('output-content');
             const modeSelect = document.getElementById('mode-select');
             const copyBtn = document.getElementById('copy-btn');
+            const sliderConfig = [
+                { id: 'temperature-slider', valueId: 'temperature-value', formatter: value => (+value).toFixed(1) },
+                { id: 'particles-slider', valueId: 'particles-value' },
+                { id: 'cursor-slider', valueId: 'cursor-value' },
+                { id: 'colour-slider', valueId: 'colour-value' },
+                { id: 'details-slider', valueId: 'details-value' }
+            ];
+
+            const getTuningValues = () => ({
+                temperature: document.getElementById('temperature-slider').value,
+                particles: document.getElementById('particles-slider').value,
+                cursor: document.getElementById('cursor-slider').value,
+                colour: document.getElementById('colour-slider').value,
+                details: document.getElementById('details-slider').value
+            });
+
+            sliderConfig.forEach(({ id, valueId, formatter }) => {
+                const slider = document.getElementById(id);
+                const valueEl = document.getElementById(valueId);
+                const updateValue = () => {
+                    const rawValue = slider.value;
+                    valueEl.textContent = formatter ? formatter(rawValue) : rawValue;
+                };
+                slider.addEventListener('input', updateValue);
+                updateValue();
+            });
 
             btnForge.addEventListener('click', () => {
                 const text = input.value;
                 const mode = modeSelect.value;
+                const tuning = getTuningValues();
                 
                 // Simulate processing delay for "Forge" feel
                 btnForge.innerHTML = 'FORGING...';
                 
                 setTimeout(() => {
-                    const result = forgePrompt(text, mode);
+                    const result = forgePrompt(text, mode, tuning);
                     outputContent.innerText = result;
                     outputPanel.classList.add('active');
                     btnForge.innerHTML = '<span style="margin-right: 8px;">⚡</span> FORGE PROMPT';
