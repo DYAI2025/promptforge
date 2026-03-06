@@ -489,6 +489,364 @@
                 scroll-behavior: auto !important;
             }
         }
+
+        /* Quality Score Panel Styles */
+        .quality-score-panel {
+            background: rgba(8, 10, 15, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .quality-score-panel.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quality-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .score-gauge-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-gauge {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(#d4af37 0deg, rgba(255,255,255,0.1) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-gauge::before {
+            content: '';
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            background: #080a0f;
+            border-radius: 50%;
+        }
+
+        .score-value {
+            position: relative;
+            z-index: 1;
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            color: var(--text-main);
+        }
+
+        .metrics-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+        }
+
+        .metric-label {
+            width: 90px;
+            color: var(--text-muted);
+        }
+
+        .metric-fill {
+            flex: 1;
+            height: 6px;
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .metric-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--gold-primary);
+            transition: width 0.5s ease;
+        }
+
+        .metric-value {
+            width: 40px;
+            text-align: right;
+            color: var(--gold-primary);
+        }
+
+        .suggestions-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 1rem 1.25rem;
+        }
+
+        .suggestions-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.75rem 0 0 0;
+        }
+
+        .suggestion-item {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .suggestion-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .suggestion-item.success {
+            color: var(--neon-green);
+        }
+
+        /* Intent Display Styles */
+        .intent-display {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 4px;
+            padding: 0.75rem 1rem;
+        }
+
+        .intent-badges {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .intent-badge {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--neon-green);
+            background: rgba(182, 255, 74, 0.1);
+            border: 1px solid rgba(182, 255, 74, 0.3);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .intent-confidence {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Scroll Progress Indicator */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold-primary), var(--neon-green));
+            width: 0%;
+            z-index: 100;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Button Micro-Interactions */
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(255, 255, 255, 0.3) 0%,
+                transparent 60%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .btn:hover::after {
+            opacity: 1;
+        }
+
+        .btn-primary {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+            border-color: var(--neon-green);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Loading Shimmer Animation */
+        .shimmer {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.03) 25%,
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(255, 255, 255, 0.03) 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            position: relative;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .forge-btn.forging {
+            pointer-events: none;
+        }
+
+        .forge-btn.forging::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 16px;
+            height: 16px;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid var(--gold-primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Copy Success Animation */
+        .copy-success {
+            animation: copyPulse 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes copyPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); background: rgba(182, 255, 74, 0.3); }
+            100% { transform: scale(1); }
+        }
+
+        .copy-btn.copied {
+            color: var(--neon-green);
+            border-color: var(--neon-green);
+        }
+
+        /* Metric Bar Animation */
+        .metric-fill {
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .metric-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, var(--gold-primary), var(--neon-green));
+            animation: metricGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes metricGlow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* API Settings Panel */
+        .api-settings-panel {
+            background: rgba(11, 15, 22, 0.9);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .api-settings-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .api-input-group {
+            margin-bottom: 1rem;
+        }
+
+        .api-input-group label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .api-input-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            padding: 0.75rem;
+            border-radius: 2px;
+            transition: border-color 0.3s;
+        }
+
+        .api-input-group input:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+        }
+
+        .cost-display {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--neon-green);
+            margin-top: 0.5rem;
+        }
+
+        .provider-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .provider-badge.gemini { background: rgba(66, 133, 244, 0.2); color: #4285f4; }
+        .provider-badge.openai { background: rgba(16, 163, 127, 0.2); color: #10a37f; }
+        .provider-badge.anthropic { background: rgba(217, 119, 6, 0.2); color: #d97706; }
     </style>
 <link rel="stylesheet" href="/index.css">
 </head>
@@ -496,6 +854,9 @@
 
     <!-- Layer 0: Gradient Background -->
     <div class="bg-gradient"></div>
+
+    <!-- Layer 0.5: Scroll Progress Indicator -->
+    <div id="scroll-progress" class="scroll-progress"></div>
 
     <!-- Layer 1: 3D Canvas -->
     <div id="canvas-container"></div>
@@ -608,6 +969,7 @@
                     <div class="forge-header">
                         <span class="font-mono text-gold" style="font-size: 0.9rem;">> CONSOLE_ACTIVE</span>
                         <div class="forge-controls">
+                            <button id="settings-btn" class="forge-select" style="background: transparent; cursor: pointer;" title="API Settings">⚙️ SETTINGS</button>
                             <select id="mode-select" class="forge-select" aria-label="Select prompt mode">
                                 <option value="spec">Mode: Specification (Std)</option>
                                 <option value="lite">Mode: Lite (Min)</option>
@@ -615,16 +977,73 @@
                             </select>
                         </div>
                     </div>
-                    
+
+                    <!-- API Settings Panel -->
+                    <div id="api-settings-panel" class="api-settings-panel">
+                        <span class="font-mono text-gold" style="font-size: 0.85rem;">// API_CREDENTIALS</span>
+                        <div class="api-input-group">
+                            <label for="gemini-key">Gemini API Key:</label>
+                            <input type="password" id="gemini-key" placeholder="AIzaSy...">
+                        </div>
+                        <div class="api-input-group">
+                            <label for="openai-key">OpenAI API Key:</label>
+                            <input type="password" id="openai-key" placeholder="sk-...">
+                        </div>
+                        <div class="api-input-group">
+                            <label for="anthropic-key">Anthropic API Key:</label>
+                            <input type="password" id="anthropic-key" placeholder="sk-ant-...">
+                        </div>
+                        <div class="cost-display">
+                            💰 Estimated costs: Gemini $0.10/1M tokens | GPT-4 $10/1M tokens | Claude $3/1M tokens
+                        </div>
+                    </div>
+
                     <div class="input-group">
                         <label for="prompt-input" class="input-label">RAW_INTENT_INPUT:</label>
                         <textarea id="prompt-input" placeholder="Enter your core task, objective, or query here..."></textarea>
                     </div>
 
-                    <div style="display: flex; justify-content: flex-end;">
-                        <button id="forge-btn" class="btn btn-primary" style="width: 100%;">
+                    <!-- Intent Detection Display -->
+                    <div id="intent-display" class="intent-display" style="display: none; margin-bottom: 1rem;">
+                        <span class="font-mono text-muted" style="font-size: 0.75rem;">// DETECTED_INTENT</span>
+                        <div class="intent-badges">
+                            <span class="intent-badge" id="intent-badge-primary"></span>
+                            <span class="intent-confidence" id="intent-confidence"></span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem; align-items: center;">
+                        <select id="llm-model" class="forge-select" style="width: auto;" title="Target LLM Model">
+                            <option value="gemini">Gemini</option>
+                            <option value="gpt4">GPT-4</option>
+                            <option value="claude">Claude</option>
+                        </select>
+                        <button id="forge-btn" class="btn btn-primary" style="flex: 1;">
                             <span style="margin-right: 8px;">⚡</span> FORGE PROMPT
                         </button>
+                    </div>
+
+                    <!-- Quality Score Panel -->
+                    <div id="quality-score-panel" class="quality-score-panel" style="display: none;">
+                        <div class="quality-header">
+                            <span class="font-mono text-gold" style="font-size: 0.85rem;">// QUALITY_ANALYSIS</span>
+                            <div class="score-gauge-container">
+                                <div class="score-gauge" id="score-gauge">
+                                    <span class="score-value" id="score-value">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="metrics-container" id="score-metrics">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
+                        
+                        <div class="suggestions-container">
+                            <span class="font-mono text-muted" style="font-size: 0.75rem;">// IMPROVEMENTS</span>
+                            <ul class="suggestions-list" id="suggestions-list">
+                                <!-- Wird dynamisch gefüllt -->
+                            </ul>
+                        </div>
                     </div>
 
                     <div id="output-panel" class="output-area" aria-live="polite">
@@ -829,9 +1248,302 @@
             document.querySelectorAll('section').forEach(section => {
                 observer.observe(section);
             });
+
+            // Scroll Progress Indicator
+            const scrollProgress = document.getElementById('scroll-progress');
+            if (scrollProgress) {
+                window.addEventListener('scroll', () => {
+                    const scrollTop = window.scrollY;
+                    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const scrollPercent = (scrollTop / docHeight) * 100;
+                    scrollProgress.style.width = `${scrollPercent}%`;
+                });
+            }
+
+            // Button Hover Effect (Magnet Glow)
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    btn.style.setProperty('--mouse-x', `${x}%`);
+                    btn.style.setProperty('--mouse-y', `${y}%`);
+                });
+            });
         };
 
         // --- 3. Prompt Builder Logic (Appendix 5) ---
+
+        // --- Intent Recognition & Dynamic Prompt Generation ---
+        const INTENT_PATTERNS = {
+          coding: { patterns: [/\b(code|function|class|api|endpoint|database|algorithm|component|module|service|react|vue|angular|node|python|javascript|typescript|implement|develop|build|create|refactor|debug|optimize|test|deploy|controller|model|view|route|query|mutation)\b/i], weight: 1.0 },
+          writing: { patterns: [/\b(write|article|blog|email|letter|story|poem|script|copy|content|edit|proofread|rewrite|summarize|translate|tone|style|voice|audience|reader)\b/i], weight: 1.0 },
+          analysis: { patterns: [/\b(analyze|compare|evaluate|assess|review|examine|investigate|data|research|study|report|findings|insights|trends|metrics|swot|framework)\b/i], weight: 1.0 },
+          creative: { patterns: [/\b(idea|brainstorm|creative|imagine|invent|design|concept|story|poem|art|music|visual|character|plot|narrative|innovative|unique|original)\b/i], weight: 1.0 },
+          business: { patterns: [/\b(strategy|plan|roadmap|timeline|budget|forecast|marketing|sales|revenue|growth|kpi|okr|pitch|proposal|presentation|stakeholder|client)\b/i], weight: 1.0 },
+          learning: { patterns: [/\b(explain|teach|learn|understand|study|course|tutorial|guide|beginner|intermediate|advanced|expert|fundamentals|exercise|practice|quiz|exam|curriculum)\b/i], weight: 1.0 }
+        };
+
+        const VARIABLE_TEMPLATES = {
+          coding: { role: "You are an expert software engineer with deep knowledge of best practices, design patterns, and clean code principles.", constraints: ["Write production-ready code with proper error handling", "Include comments for complex logic", "Follow language-specific conventions"], outputFormat: "Code block with explanation" },
+          writing: { role: "You are a professional content writer with expertise in engaging, clear, and audience-appropriate communication.", constraints: ["Match the requested tone and style", "Ensure proper grammar and spelling", "Structure content for readability"], outputFormat: "Well-formatted text" },
+          analysis: { role: "You are an analytical expert skilled at breaking down complex topics and providing evidence-based insights.", constraints: ["Support claims with reasoning", "Acknowledge uncertainties", "Present multiple perspectives"], outputFormat: "Structured analysis with sections" },
+          creative: { role: "You are a creative thinker with expertise in generating original, innovative ideas.", constraints: ["Think outside conventional boundaries", "Provide multiple variations", "Maintain internal consistency"], outputFormat: "Creative output with notes" },
+          business: { role: "You are a strategic business advisor with expertise in planning and measurable outcomes.", constraints: ["Focus on actionable recommendations", "Consider ROI and constraints", "Include timelines"], outputFormat: "Executive summary" },
+          learning: { role: "You are an expert educator skilled at explaining complex concepts accessibly.", constraints: ["Use analogies and examples", "Build from fundamentals", "Adapt to learner's level"], outputFormat: "Educational content with examples" }
+        };
+
+        const LLM_PROFILES = {
+          gemini: { name: 'Google Gemini', promptStyle: 'direct' },
+          gpt4: { name: 'OpenAI GPT-4', promptStyle: 'conversational' },
+          claude: { name: 'Anthropic Claude', promptStyle: 'structured', prefersXmlTags: true }
+        };
+
+        const detectIntent = (input) => {
+          const text = input.trim();
+          const scores = {};
+          for (const [category, config] of Object.entries(INTENT_PATTERNS)) {
+            let matchCount = 0;
+            for (const pattern of config.patterns) { if (pattern.test(text)) matchCount++; }
+            scores[category] = (matchCount / config.patterns.length) * config.weight;
+          }
+          let bestIntent = 'general', bestScore = 0;
+          for (const [category, score] of Object.entries(scores)) { if (score > bestScore) { bestScore = score; bestIntent = category; } }
+          return { intent: bestIntent, confidence: Math.min(1, bestScore * 2), allScores: scores };
+        };
+
+        const generateDynamicPrompt = (input, mode = 'spec', detectedIntent = null) => {
+          const intentResult = detectedIntent || detectIntent(input);
+          const intent = intentResult.intent;
+          const template = VARIABLE_TEMPLATES[intent] || VARIABLE_TEMPLATES.coding;
+          const timestamp = new Date().toISOString();
+          const cleanInput = input.trim();
+
+          if (mode === 'lite') {
+            return { prompt: `### SYSTEM: ${intent.toUpperCase()}\n### ROLE: ${template.role}\n### TASK: ${cleanInput}\n### FORMAT: ${template.outputFormat}`, metadata: { intent, confidence: intentResult.confidence, mode: 'lite', timestamp } };
+          }
+          if (mode === 'strict') {
+            return { prompt: `<!-- SYSTEM: SECURE_ENCLAVE_v1 | Intent: ${intent.toUpperCase()} -->\n<meta>\n  <timestamp>${timestamp}</timestamp>\n  <intent>${intent}</intent>\n  <confidence>${(intentResult.confidence * 100).toFixed(0)}%</confidence>\n  <security_level>HIGH</security_level>\n</meta>\n\n<instruction_set>\n  <role>${template.role}</role>\n  <constraints>\n    ${template.constraints.map(c => `- ${c}`).join('\n    ')}\n    - No hallucination permitted.\n  </constraints>\n  <task>\n    ${cleanInput}\n  </task>\n</instruction_set>\n\n<output_format>${template.outputFormat}</output_format>`, metadata: { intent, confidence: intentResult.confidence, mode: 'strict', timestamp } };
+          }
+          return { prompt: `### SYSTEM CONTEXT\nYou are Prompt Forge Unit 7.\n\n**Detected Intent:** ${intent.toUpperCase()} (${(intentResult.confidence * 100).toFixed(0)}%)\n\n### ROLE\n${template.role}\n\n### CONSTRAINTS\n${template.constraints.map((c, i) => `${i + 1}. ${c}`).join('\n')}\n\n### USER INPUT\n"${cleanInput}"\n\n### OUTPUT FORMAT\n${template.outputFormat}\n\n### OUTPUT\n[Awaiting Generation...]`, metadata: { intent, confidence: intentResult.confidence, mode: 'spec', timestamp } };
+        };
+
+        const adaptPromptForModel = (prompt, model = 'gemini') => {
+          const profile = LLM_PROFILES[model];
+          if (!profile) return prompt;
+          let adapted = prompt;
+          if (profile.prefersXmlTags) {
+            adapted = adapted.replace(/### SYSTEM CONTEXT/g, '<system_context>').replace(/### ROLE/g, '</system_context>\n<role>').replace(/### CONSTRAINTS/g, '</role>\n<constraints>').replace(/### USER INPUT/g, '</constraints>\n<user_input>').replace(/### OUTPUT FORMAT/g, '</user_input>\n<output_format>').replace(/### OUTPUT/g, '</output_format>\n<output>').replace(/\[Awaiting Generation...\]/g, '[Awaiting Generation...]</output>');
+          }
+          if (profile.promptStyle === 'conversational') { adapted = `Here's a task for you:\n\n${adapted}`; }
+          return adapted;
+        };
+
+        // --- Quality Scoring System ---
+        const calculateQualityScore = (inputText) => {
+            const text = inputText.trim();
+            const scores = {
+                clarity: 0,
+                completeness: 0,
+                safety: 0,
+                efficiency: 0
+            };
+            const suggestions = [];
+
+            // CLARITY: Ist die Anweisung eindeutig?
+            const actionWords = /\b(create|build|write|analyze|explain|compare|generate|design|implement|fix|optimize|refactor|calculate|summarize|translate|convert|extract|validate|test|debug)\b/i;
+            const specificTerms = /\b(function|class|API|endpoint|database|algorithm|component|module|service|controller|model|view|route|query|mutation)\b/i;
+            
+            if (actionWords.test(text)) {
+                scores.clarity += 40;
+            } else {
+                suggestions.push('Füge ein konkretes Aktionsverb hinzu (z.B. "Erstelle", "Analysiere", "Vergleiche")');
+            }
+            
+            if (specificTerms.test(text)) {
+                scores.clarity += 30;
+            } else {
+                suggestions.push('Verwende spezifische Fachbegriffe für präzisere Ergebnisse');
+            }
+            
+            if (text.length >= 20) {
+                scores.clarity += 30;
+            } else {
+                scores.clarity += Math.max(0, text.length * 1.5);
+                if (text.length < 10) {
+                    suggestions.push('Die Eingabe ist sehr kurz — füge mehr Kontext hinzu');
+                }
+            }
+
+            // COMPLETENESS: Fehlen wichtige Kontext-Infos?
+            const contextPatterns = [
+                /\b(for|as|with|using|via|through)\b/i,
+                /\b(in order to|so that|to ensure)\b/i,
+                /\b(must|should|need to|required)\b/i,
+                /\b(example|such as|like|including)\b/i,
+                /\b(don't|avoid|never|without|except)\b/i
+            ];
+            
+            let contextMatches = 0;
+            contextPatterns.forEach(pattern => {
+                if (pattern.test(text)) contextMatches++;
+            });
+            
+            scores.completeness = Math.min(100, contextMatches * 25);
+            
+            if (contextMatches < 2) {
+                suggestions.push('Füge Kontext hinzu: Zielgruppe, Rahmenbedingungen oder Beispiele');
+            }
+            if (!contextPatterns[4].test(text)) {
+                suggestions.push('Definiere negative Constraints (was NICHT getan werden soll)');
+            }
+
+            // SAFETY: Enthält schädliche Instructions?
+            const dangerousPatterns = [
+                /\b(hack|exploit|bypass|inject|malware|virus|spam|phish)\b/i,
+                /\b(illegal|unauthorized|stolen|fake|fraud)\b/i,
+                /\b(harm|hurt|damage|destroy|kill)\b/i
+            ];
+            
+            let safetyDeductions = 0;
+            dangerousPatterns.forEach(pattern => {
+                if (pattern.test(text)) safetyDeductions += 40;
+            });
+            
+            scores.safety = Math.max(0, 100 - safetyDeductions);
+            
+            if (safetyDeductions > 0) {
+                suggestions.push('⚠️ Der Prompt enthält potenziell problematische Anweisungen');
+            }
+
+            // EFFICIENCY: Token-Optimierung möglich?
+            const wordCount = text.split(/\s+/).length;
+            const redundancyPatterns = [
+                /\b(please|kindly|I would like|I want|I need)\b/gi,
+                /\b(very|really|extremely|absolutely)\b/gi,
+                /\b(can you|could you|will you|would you)\b/gi
+            ];
+            
+            let redundancyCount = 0;
+            redundancyPatterns.forEach(pattern => {
+                const matches = text.match(pattern);
+                if (matches) redundancyCount += matches.length;
+            });
+            
+            if (wordCount >= 15 && wordCount <= 150) {
+                scores.efficiency = 100;
+            } else if (wordCount < 15) {
+                scores.efficiency = Math.max(40, wordCount * 4);
+            } else {
+                scores.efficiency = Math.max(50, 100 - (wordCount - 150) * 0.5);
+            }
+            
+            scores.efficiency = Math.max(0, scores.efficiency - (redundancyCount * 10));
+            
+            if (redundancyCount > 0) {
+                suggestions.push('Entferne Füllwörter für effizientere Prompts');
+            }
+            if (wordCount > 150) {
+                suggestions.push(`Der Prompt ist sehr lang (${wordCount} Wörter) — kürze auf das Wesentliche`);
+            }
+
+            // Gesamtscore berechnen (gewichtet)
+            const weights = {
+                clarity: 0.30,
+                completeness: 0.30,
+                safety: 0.25,
+                efficiency: 0.15
+            };
+            
+            const totalScore = Math.round(
+                scores.clarity * weights.clarity +
+                scores.completeness * weights.completeness +
+                scores.safety * weights.safety +
+                scores.efficiency * weights.efficiency
+            );
+
+            return {
+                total: totalScore,
+                metrics: scores,
+                suggestions: suggestions.slice(0, 4)
+            };
+        };
+
+        // Update Quality Display UI
+        const updateQualityDisplay = (quality) => {
+            if (!qualityScorePanel || !scoreGauge || !scoreValue) return;
+            
+            // Score Value anzeigen
+            scoreValue.innerText = quality.total;
+            
+            // Farbe basierend auf Score
+            let scoreColor;
+            if (quality.total >= 80) scoreColor = '#b6ff4a'; // Neon Green
+            else if (quality.total >= 60) scoreColor = '#d4af37'; // Gold
+            else if (quality.total >= 40) scoreColor = '#ffa500'; // Orange
+            else scoreColor = '#ff4444'; // Red
+            
+            // Gauge aktualisieren (conic gradient)
+            scoreGauge.style.background = `conic-gradient(${scoreColor} ${quality.total * 3.6}deg, rgba(255,255,255,0.1) 0deg)`;
+            
+            // Metriken anzeigen
+            if (scoreMetrics) {
+                scoreMetrics.innerHTML = `
+                    <div class="metric-bar">
+                        <span class="metric-label">Clarity</span>
+                        <div class="metric-fill" style="width: ${quality.metrics.clarity}%"></div>
+                        <span class="metric-value">${quality.metrics.clarity}%</span>
+                    </div>
+                    <div class="metric-bar">
+                        <span class="metric-label">Completeness</span>
+                        <div class="metric-fill" style="width: ${quality.metrics.completeness}%"></div>
+                        <span class="metric-value">${quality.metrics.completeness}%</span>
+                    </div>
+                    <div class="metric-bar">
+                        <span class="metric-label">Safety</span>
+                        <div class="metric-fill" style="width: ${quality.metrics.safety}%"></div>
+                        <span class="metric-value">${quality.metrics.safety}%</span>
+                    </div>
+                    <div class="metric-bar">
+                        <span class="metric-label">Efficiency</span>
+                        <div class="metric-fill" style="width: ${quality.metrics.efficiency}%"></div>
+                        <span class="metric-value">${quality.metrics.efficiency}%</span>
+                    </div>
+                `;
+            }
+            
+            // Verbesserungsvorschläge anzeigen
+            if (suggestionsList) {
+                if (quality.suggestions.length > 0) {
+                    suggestionsList.innerHTML = quality.suggestions
+                        .map(s => `<li class="suggestion-item">• ${s}</li>`)
+                        .join('');
+                    suggestionsList.style.display = 'block';
+                } else {
+                    suggestionsList.innerHTML = '<li class="suggestion-item success">✓ Keine Verbesserungen nötig - ausgezeichneter Prompt!</li>';
+                    suggestionsList.style.display = 'block';
+                }
+            }
+            
+            // Copy-Button aktivieren/deaktivieren
+            const copyBtn = document.getElementById('copy-btn');
+            if (copyBtn) {
+                if (quality.total < 50) {
+                    copyBtn.style.opacity = '0.5';
+                    copyBtn.style.pointerEvents = 'none';
+                    copyBtn.title = 'Score muss mindestens 50 sein';
+                } else {
+                    copyBtn.style.opacity = '1';
+                    copyBtn.style.pointerEvents = 'auto';
+                    copyBtn.title = 'In Zwischenablage kopieren';
+                }
+            }
+            
+            // Panel einblenden
+            qualityScorePanel.style.display = 'block';
+            qualityScorePanel.classList.add('active');
+        };
+
         const forgePrompt = (inputText, mode) => {
             const cleanInput = inputText.trim() || "[NO INPUT DETECTED]";
             const timestamp = new Date().toISOString();
@@ -886,6 +1598,36 @@ Adhere to the following architectural guidelines:
             init3D();
             initUI();
 
+            // API Settings Management
+            const settingsBtn = document.getElementById('settings-btn');
+            const apiSettingsPanel = document.getElementById('api-settings-panel');
+            const geminiKeyInput = document.getElementById('gemini-key');
+            const openaiKeyInput = document.getElementById('openai-key');
+            const anthropicKeyInput = document.getElementById('anthropic-key');
+
+            // Load saved API keys from localStorage
+            const savedKeys = {
+                gemini: localStorage.getItem('gemini_api_key') || '',
+                openai: localStorage.getItem('openai_api_key') || '',
+                anthropic: localStorage.getItem('anthropic_api_key') || ''
+            };
+
+            geminiKeyInput.value = savedKeys.gemini;
+            openaiKeyInput.value = savedKeys.openai;
+            anthropicKeyInput.value = savedKeys.anthropic;
+
+            // Save API keys on change
+            [geminiKeyInput, openaiKeyInput, anthropicKeyInput].forEach(input => {
+                input.addEventListener('change', () => {
+                    localStorage.setItem(`${input.id.replace('-key', '')}_api_key`, input.value);
+                });
+            });
+
+            // Toggle settings panel
+            settingsBtn.addEventListener('click', () => {
+                apiSettingsPanel.classList.toggle('active');
+            });
+
             // Builder Interaction
             const btnForge = document.getElementById('forge-btn');
             const input = document.getElementById('prompt-input');
@@ -893,27 +1635,82 @@ Adhere to the following architectural guidelines:
             const outputContent = document.getElementById('output-content');
             const modeSelect = document.getElementById('mode-select');
             const copyBtn = document.getElementById('copy-btn');
+            const qualityScorePanel = document.getElementById('quality-score-panel');
+            const scoreGauge = document.getElementById('score-gauge');
+            const scoreValue = document.getElementById('score-value');
+            const scoreMetrics = document.getElementById('score-metrics');
+            const suggestionsList = document.getElementById('suggestions-list');
+            const intentDisplay = document.getElementById('intent-display');
+            const intentBadge = document.getElementById('intent-badge-primary');
+            const intentConfidence = document.getElementById('intent-confidence');
+            const llmModel = document.getElementById('llm-model');
+
+            // Intent-Erkennung bei Input-Änderung
+            input.addEventListener('input', () => {
+                const text = input.value;
+                if (text.length < 5) {
+                    intentDisplay.style.display = 'none';
+                    return;
+                }
+                
+                const intent = detectIntent(text);
+                if (intent.intent !== 'general' && intent.confidence > 0.2) {
+                    intentBadge.innerText = intent.intent;
+                    intentConfidence.innerText = `(${(intent.confidence * 100).toFixed(0)}% match)`;
+                    intentDisplay.style.display = 'block';
+                } else {
+                    intentDisplay.style.display = 'none';
+                }
+            });
 
             btnForge.addEventListener('click', () => {
                 const text = input.value;
                 const mode = modeSelect.value;
-                
-                // Simulate processing delay for "Forge" feel
-                btnForge.innerHTML = 'FORGING...';
-                
+                const model = llmModel.value;
+
+                // Quality Score berechnen
+                const quality = calculateQualityScore(text);
+
+                // Intent erkennen
+                const intent = detectIntent(text);
+
+                // Shimmer-Animation aktivieren
+                btnForge.classList.add('forging');
+                btnForge.innerHTML = '';
+
                 setTimeout(() => {
-                    const result = forgePrompt(text, mode);
-                    outputContent.innerText = result;
+                    // Dynamic Prompt generieren
+                    let result = generateDynamicPrompt(text, mode, intent);
+
+                    // Für LLM-Modell anpassen
+                    if (model !== 'gemini') {
+                        result.prompt = adaptPromptForModel(result.prompt, model);
+                    }
+
+                    outputContent.innerText = result.prompt;
                     outputPanel.classList.add('active');
+
+                    // Button zurücksetzen
+                    btnForge.classList.remove('forging');
                     btnForge.innerHTML = '<span style="margin-right: 8px;">⚡</span> FORGE PROMPT';
-                }, 400);
+
+                    // Score-Anzeige aktualisieren
+                    updateQualityDisplay(quality);
+                }, 800);
             });
 
             copyBtn.addEventListener('click', () => {
+                // Success-Animation
+                copyBtn.classList.add('copy-success', 'copied');
+
                 navigator.clipboard.writeText(outputContent.innerText).then(() => {
                     const original = copyBtn.innerText;
-                    copyBtn.innerText = "COPIED";
-                    setTimeout(() => copyBtn.innerText = original, 2000);
+                    copyBtn.innerText = "✓ COPIED";
+
+                    setTimeout(() => {
+                        copyBtn.classList.remove('copy-success', 'copied');
+                        copyBtn.innerText = original;
+                    }, 2000);
                 });
             });
         });
